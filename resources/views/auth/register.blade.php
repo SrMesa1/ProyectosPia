@@ -1,44 +1,65 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <h2>Registro de Usuario</h2>
+
+    <form method="POST" action="{{ route('usuario.create') }}">
         @csrf
 
-        <!-- Nombre de usuario -->
-        <div>
-            <x-input-label for="nombre_usuario" :value="__('Nombre de Usuario')" />
-            <x-text-input id="nombre_usuario" class="block mt-1 w-full" type="text" name="nombre_usuario" :value="old('nombre_usuario')" required autofocus />
-            <x-input-error :messages="$errors->get('nombre_usuario')" class="mt-2" />
+        <div class="mb-3">
+            <label for="nombre_usuario">Nombre de Usuario:</label>
+            <input type="text" name="nombre_usuario" class="form-control" required>
         </div>
 
-        <!-- Contraseña -->
-        <div class="mt-4">
-            <x-input-label for="contraseña" :value="__('Contraseña')" />
-            <x-text-input id="contraseña" class="block mt-1 w-full" type="password" name="contraseña" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('contraseña')" class="mt-2" />
+        <div class="mb-3">
+            <label for="contraseña">Contraseña:</label>
+            <input type="password" name="contraseña" class="form-control" required>
         </div>
 
-        <!-- Confirmar Contraseña -->
-        <div class="mt-4">
-            <x-input-label for="contraseña_confirmation" :value="__('Confirmar Contraseña')" />
-            <x-text-input id="contraseña_confirmation" class="block mt-1 w-full" type="password" name="contraseña_confirmation" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('contraseña_confirmation')" class="mt-2" />
+        <div class="mb-3">
+            <label for="id_tipo_usuario">Tipo de Usuario:</label>
+            <select name="id_tipo_usuario" class="form-control" required onchange="mostrarFormulario(this.value)">
+                <option value="">Seleccione un tipo</option>
+                <option value="1">Estudiante</option>
+                <option value="2">Docente</option>
+                <option value="3">Evaluador</option>
+            </select>
         </div>
 
-        <!-- ID Tipo Usuario (puedes cambiar esto por un select si deseas) -->
-        <div class="mt-4">
-            <x-input-label for="id_tipo_usuario" :value="__('Tipo de Usuario')" />
-            <x-text-input id="id_tipo_usuario" class="block mt-1 w-full" type="number" name="id_tipo_usuario" :value="old('id_tipo_usuario')" required />
-            <x-input-error :messages="$errors->get('id_tipo_usuario')" class="mt-2" />
+        <div id="form-estudiante" style="display:none;">
+            <h4>Datos del Estudiante</h4>
+            <input type="text" name="nombre" placeholder="Nombre" class="form-control mb-2">
+            <input type="email" name="correo" placeholder="Correo" class="form-control mb-2">
+            <input type="text" name="documento" placeholder="Documento" class="form-control mb-2">
+            <input type="number" name="id_programa" placeholder="ID Programa" class="form-control mb-2">
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100" href="{{ route('login') }}">
-                {{ __('¿Ya estás registrado?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Registrarse') }}
-            </x-primary-button>
+        <div id="form-docente" style="display:none;">
+            <h4>Datos del Docente</h4>
+            <input type="text" name="nombre" placeholder="Nombre" class="form-control mb-2">
+            <input type="email" name="correo" placeholder="Correo" class="form-control mb-2">
+            <input type="text" name="documento" placeholder="Documento" class="form-control mb-2">
+            <input type="number" name="id_departamento" placeholder="ID Departamento" class="form-control mb-2">
         </div>
+
+        <div id="form-evaluador" style="display:none;">
+            <h4>Datos del Evaluador</h4>
+            <input type="text" name="nombre" placeholder="Nombre" class="form-control mb-2">
+            <input type="email" name="correo" placeholder="Correo" class="form-control mb-2">
+            <input type="text" name="documento" placeholder="Documento" class="form-control mb-2">
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Registrar</button>
     </form>
-</x-guest-layout>
+</div>
+
+<script>
+    function mostrarFormulario(valor) {
+        document.getElementById('form-estudiante').style.display = valor == 1 ? 'block' : 'none';
+        document.getElementById('form-docente').style.display = valor == 2 ? 'block' : 'none';
+        document.getElementById('form-evaluador').style.display = valor == 3 ? 'block' : 'none';
+    }
+</script>
+@endsection
 

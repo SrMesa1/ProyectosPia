@@ -18,7 +18,7 @@ class UsuarioController extends Controller
     public function index()
     {
         $usuarios = Usuario::with('tipoUsuario')->get();
-        return view('usuarios.index', compact('usuarios'));
+        return view('usuario.index', compact('usuario'));
     }
 
     /**
@@ -27,7 +27,7 @@ class UsuarioController extends Controller
     public function create()
     {
         $tipos = TipoUsuario::all();
-        return view('usuarios.create', compact('tipos'));
+        return view('usuario.create', compact('tipos'));
 
     }
 
@@ -60,7 +60,7 @@ class UsuarioController extends Controller
         }
 
         Usuario::create($data);
-        return redirect()->route('usuarios.index')->with('success', 'Usuario creado.');
+        return redirect()->route('usuario.index')->with('success', 'Usuario creado.');
     }
 
     /**
@@ -69,6 +69,6 @@ class UsuarioController extends Controller
     public function destroy(string $id)
     {
         Usuario::destroy($id);
-        return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado.');
+        return redirect()->route('usuario.index')->with('success', 'Usuario eliminado.');
     }
 }
