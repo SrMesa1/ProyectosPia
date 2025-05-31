@@ -6,7 +6,8 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
-![Samuel Moreno Mesa](https://github.com/SrMesa1/ProyectosPia/blob/main/Samuel.jpg)
+![Samuel Moreno Mesa](https://github.com/SrMesa1/ProyectosPia/raw/main/Samuel.jpg)
+
 
 
 ## About Laravel
