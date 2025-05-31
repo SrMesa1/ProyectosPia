@@ -1,4 +1,6 @@
-# 💻 TIA-3
+# 💻 Proyecto Pia
+ Este
+# Miembros del equipo
 <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/Samuel.jpg" alt="Samuel Moreno Mesa" width="300"/>
 
 
