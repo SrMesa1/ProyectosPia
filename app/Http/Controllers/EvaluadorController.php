@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Evaluador;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 
 class EvaluadorController extends Controller
@@ -19,9 +20,10 @@ class EvaluadorController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('evaluadores.create');
+        $user_id = $request->query('user_id');
+        return view('evaluador.create', compact('user_id'));
     }
 
     /**
@@ -30,12 +32,20 @@ class EvaluadorController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required',
-            'correo' => 'required|email|unique:evaluadores',
-            'documento' => 'required|unique:evaluadores'
+            'nombre' => 'required|string|max:255',
+            'correo' => 'required|email|unique:evaluadores,correo',
+            'documento' => 'required|string|unique:evaluadores,documento',
+            'especialidad' => 'required|string|max:255',
+            'user_id' => 'required|exists:usuarios,id'
         ]);
-        Evaluador::create($request->all());
-        return redirect()->route('evaluadores.index')->with('success', 'Evaluador creado.');
+
+        $evaluador = Evaluador::create($request->all());
+        
+        // Actualizar el usuario con el ID del evaluador
+        $usuario = Usuario::findOrFail($request->user_id);
+        $usuario->update(['id_evaluador' => $evaluador->id]);
+
+        return redirect()->route('home')->with('success', 'Registro de evaluador completado exitosamente.');
     }
 
     /**

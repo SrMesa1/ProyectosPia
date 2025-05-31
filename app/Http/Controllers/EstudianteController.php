@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Estudiante;
+use App\Models\Usuario;
 use App\Models\Programa;
 use Illuminate\Http\Request;
 
@@ -20,10 +21,11 @@ class EstudianteController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
+        $user_id = $request->query('user_id');
         $programas = Programa::all();
-        return view('estudiantes.create', compact('programas'));
+        return view('estudiante.create', compact('user_id', 'programas'));
     }
 
     /**
@@ -32,13 +34,20 @@ class EstudianteController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required',
-            'correo' => 'required|email|unique:estudiantes',
-            'documento' => 'required|unique:estudiantes',
-            'id_programa' => 'required|exists:programas,id'
+            'nombre' => 'required|string|max:255',
+            'correo' => 'required|email|unique:estudiantes,correo',
+            'documento' => 'required|string|unique:estudiantes,documento',
+            'id_programa' => 'required|exists:programas,id',
+            'user_id' => 'required|exists:usuarios,id'
         ]);
-        Estudiante::create($request->all());
-        return redirect()->route('estudiantes.index')->with('success', 'Estudiante creado.');
+
+        $estudiante = Estudiante::create($request->all());
+        
+        // Actualizar el usuario con el ID del estudiante
+        $usuario = Usuario::findOrFail($request->user_id);
+        $usuario->update(['id_estudiante' => $estudiante->id]);
+
+        return redirect()->route('home')->with('success', 'Registro de estudiante completado exitosamente.');
     }
 
     /**

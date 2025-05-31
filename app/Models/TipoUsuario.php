@@ -7,14 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class TipoUsuario extends Model
 {
-     use HasFactory;
+    use HasFactory;
 
     protected $table = 'tipo_usuario';
     protected $primaryKey = 'id_tipo_usuario';
-    public $timestamps = false;
+
+    protected $fillable = [
+        'nombre'
+    ];
 
     public function usuarios()
     {
-        return $this->hasMany(Usuario::class, 'id_tipo_usuario');
+        return $this->hasMany(Usuario::class, 'id_tipo_usuario', 'id_tipo_usuario');
     }
 }

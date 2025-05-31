@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Docente;
+use App\Models\Usuario;
 use App\Models\Departamento;
 use Illuminate\Http\Request;
 
@@ -20,10 +21,11 @@ class DocenteController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
+        $user_id = $request->query('user_id');
         $departamentos = Departamento::all();
-        return view('docentes.create', compact('departamentos'));
+        return view('docente.create', compact('user_id', 'departamentos'));
     }
 
     /**
@@ -32,13 +34,20 @@ class DocenteController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required',
-            'correo' => 'required|email|unique:docentes',
-            'documento' => 'required|unique:docentes',
-            'id_departamento' => 'required|exists:departamentos,id'
+            'nombre' => 'required|string|max:255',
+            'correo' => 'required|email|unique:docentes,correo',
+            'documento' => 'required|string|unique:docentes,documento',
+            'id_departamento' => 'required|exists:departamentos,id',
+            'user_id' => 'required|exists:usuarios,id'
         ]);
-        Docente::create($request->all());
-        return redirect()->route('docentes.index')->with('success', 'Docente creado.');
+
+        $docente = Docente::create($request->all());
+        
+        // Actualizar el usuario con el ID del docente
+        $usuario = Usuario::findOrFail($request->user_id);
+        $usuario->update(['id_docente' => $docente->id]);
+
+        return redirect()->route('home')->with('success', 'Registro de docente completado exitosamente.');
     }
 
     /**

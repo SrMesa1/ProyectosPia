@@ -13,11 +13,9 @@ return new class extends Migration
     {
         Schema::create('facultad', function (Blueprint $table) {
             $table->id('id_facultad');
-            $table->string('nombre', 150);
-            $table->unsignedBigInteger('id_institucion');
+            $table->string('nombre', 100);
+            $table->unsignedBigInteger('id_departamento');
             $table->timestamps();
-
-            $table->foreign('id_institucion')->references('id_institucion')->on('institucion')->onDelete('cascade');
         });
     }
 

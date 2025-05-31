@@ -4,21 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Models\Usuario;
 use App\Models\TipoUsuario;
-use App\Models\Estudiante;
-use App\Models\Docente;
-use App\Models\Evaluador;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules;
+use App\Http\Controllers\Controller;
 
 class UsuarioController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('web');
+        $this->middleware('auth')->except(['create', 'store']);
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $usuarios = Usuario::with('tipoUsuario')->get();
-        return view('usuario.index', compact('usuario'));
+        return view('usuario.index', compact('usuarios'));
     }
 
     /**
@@ -28,7 +39,6 @@ class UsuarioController extends Controller
     {
         $tipos = TipoUsuario::all();
         return view('usuario.create', compact('tipos'));
-
     }
 
     /**
@@ -37,30 +47,32 @@ class UsuarioController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre_usuario' => 'required|unique:usuarios',
-            'contraseña' => 'required|min:6',
-            'id_tipo_usuario' => 'required|exists:tipo_usuarios,id'
+            'nombre_usuario' => ['required', 'string', 'max:50', 'unique:usuarios'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:usuarios'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'id_tipo_usuario' => ['required', 'exists:tipo_usuario,id_tipo_usuario']
         ]);
 
-        $data = [
+        $usuario = Usuario::create([
             'nombre_usuario' => $request->nombre_usuario,
-            'contraseña' => Hash::make($request->contraseña),
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
             'id_tipo_usuario' => $request->id_tipo_usuario
-        ];
+        ]);
 
-        if ($request->id_tipo_usuario == 1) {
-            $estudiante = Estudiante::create($request->only('nombre', 'correo', 'documento', 'id_programa'));
-            $data['id_estudiante'] = $estudiante->id;
-        } elseif ($request->id_tipo_usuario == 2) {
-            $docente = Docente::create($request->only('nombre', 'correo', 'documento', 'id_departamento'));
-            $data['id_docente'] = $docente->id;
-        } elseif ($request->id_tipo_usuario == 3) {
-            $evaluador = Evaluador::create($request->only('nombre', 'correo', 'documento'));
-            $data['id_evaluador'] = $evaluador->id;
+        Auth::login($usuario);
+
+        // Redirigir según el tipo de usuario
+        switch($request->id_tipo_usuario) {
+            case 1: // Estudiante
+                return redirect()->route('estudiante.create')->with('user_id', $usuario->id_usuario);
+            case 2: // Docente
+                return redirect()->route('docente.create')->with('user_id', $usuario->id_usuario);
+            case 3: // Evaluador
+                return redirect()->route('evaluador.create')->with('user_id', $usuario->id_usuario);
+            default:
+                return redirect()->route('usuario.index')->with('success', 'Usuario registrado exitosamente.');
         }
-
-        Usuario::create($data);
-        return redirect()->route('usuario.index')->with('success', 'Usuario creado.');
     }
 
     /**
@@ -69,6 +81,6 @@ class UsuarioController extends Controller
     public function destroy(string $id)
     {
         Usuario::destroy($id);
-        return redirect()->route('usuario.index')->with('success', 'Usuario eliminado.');
+        return redirect()->route('usuario.index')->with('success', 'Usuario eliminado exitosamente.');
     }
 }

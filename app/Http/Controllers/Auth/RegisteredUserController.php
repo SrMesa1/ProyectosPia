@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Usuario;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,22 +29,35 @@ class RegisteredUserController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): RedirectResponse
-{
-    $request->validate([
-        'nombre_usuario' => ['required', 'string', 'max:50', 'unique:usuario'],
-        'contraseña' => ['required', 'confirmed', Rules\Password::defaults()],
-        'id_tipo_usuario' => ['required', 'exists:tipo_usuario,id_tipo_usuario'],
-    ]);
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:usuarios'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'tipo_usuario' => ['required', 'in:1,2,3'],
+        ]);
 
-    $usuario = Usuario::create([
-        'nombre_usuario' => $request->nombre_usuario,
-        'contraseña' => Hash::make($request->contraseña),
-        'id_tipo_usuario' => $request->id_tipo_usuario,
-    ]);
+        $usuario = Usuario::create([
+            'nombre_usuario' => $request->name,
+            'email' => $request->email,
+            'contraseña' => Hash::make($request->password),
+            'id_tipo_usuario' => $request->tipo_usuario,
+        ]);
 
-    Auth::login($usuario);
+        event(new Registered($usuario));
 
-    return redirect(RouteServiceProvider::HOME);
-}
+        Auth::login($usuario);
 
+        // Redirigir según el tipo de usuario
+        switch($request->tipo_usuario) {
+            case 1:
+                return redirect()->route('estudiante.create', ['user_id' => $usuario->id]);
+            case 2:
+                return redirect()->route('docente.create', ['user_id' => $usuario->id]);
+            case 3:
+                return redirect()->route('evaluador.create', ['user_id' => $usuario->id]);
+            default:
+                return redirect(RouteServiceProvider::HOME);
+        }
+    }
 }
