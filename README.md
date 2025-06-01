@@ -2,7 +2,7 @@ D# 💻 Proyecto Pia
  
 # Miembros del equipo
 <div align="center">
-  <table>
+  <table width="700">
     <tr>
       <td>
         <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/Samuel.jpg" alt="Samuel Moreno Mesa" width="200" style="border-radius: 10px;">
@@ -17,7 +17,7 @@ D# 💻 Proyecto Pia
 
 <br>
 <div align="center">
-  <table>
+  <table width="700">
     <tr>
       <td>
         <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/shelcy.jpeg" alt="Shelcy Rondon" width="200" style="border-radius: 10px;">
@@ -46,7 +46,7 @@ D# 💻 Proyecto Pia
 
 <br>
 <div align="center">
-  <table>
+  <table width="700">
     <tr>
       <td>
         <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/juandavid.jpeg" alt="Juan David Lopez" width="200" style="border-radius: 10px;">
