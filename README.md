@@ -1,4 +1,4 @@
-D# 💻 Proyecto Pia
+# 💻 Proyecto Pia
  
 # Miembros del equipo
 <div align="center">
@@ -74,6 +74,26 @@ D# 💻 Proyecto Pia
   </table>
 </div>
 
+# 🧩 Descripción del Proyecto
+
+Este proyecto es una plataforma web desarrollada con **Laravel**, diseñada para gestionar de manera eficiente los proyectos PIA (Proyecto Integrador de Aula) y PA (Proyecto Académico) de los estudiantes de la **Universidad Pascual Bravo**.
+
+La aplicación permite a los usuarios:
+
+- ✅ **Crear nuevos proyectos** con la información relevante del equipo y el desarrollo del trabajo.
+- 📝 **Editar** los proyectos existentes para mantenerlos actualizados.
+- 🗑️ **Eliminar** proyectos de forma segura.
+- 🔍 **Consultar** y visualizar proyectos de otros equipos o semestres.
+
+La plataforma está construida con herramientas modernas como:
+
+- **Laravel** (Framework backend principal)
+- **Blade** (Motor de plantillas)
+- **Bootstrap** (Diseño responsivo)
+- **MySQL** (Base de datos relacional)
+- **JavaScript / JQuery** (Interacción dinámica)
+
+Gracias a esta solución, se facilita la organización, seguimiento y presentación de los proyectos académicos en un entorno centralizado, intuitivo y profesional.
 
 
 
