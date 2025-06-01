@@ -27,7 +27,6 @@ class CheckUserType
         };
 
         if ($request->user()->id_tipo_usuario !== $tipoId) {
-            // Si estamos en la ruta dashboard, no redirigimos para evitar el bucle
             if ($request->routeIs('dashboard')) {
                 return $next($request);
             }

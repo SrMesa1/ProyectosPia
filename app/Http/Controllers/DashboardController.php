@@ -22,13 +22,11 @@ class DashboardController extends Controller
             'perfil_completado' => $user->perfil_completado
         ]);
 
-        // Si el tipo de usuario no es válido, mostrar error en el dashboard
         if (!in_array($user->id_tipo_usuario, [1, 2, 3])) {
             Log::error('Tipo de usuario no válido', ['tipo' => $user->id_tipo_usuario]);
             return view('dashboard')->with('error', 'Tipo de usuario no válido');
         }
 
-        // Si el perfil no está completo, redirigir al formulario correspondiente
         if (!$user->perfil_completado) {
             Log::info('Usuario con perfil incompleto');
             $routes = [
@@ -40,7 +38,6 @@ class DashboardController extends Controller
             return redirect()->route($routes[$user->id_tipo_usuario]);
         }
 
-        // Si el perfil está completo, redirigir al dashboard correspondiente
         Log::info('Usuario con perfil completo, redirigiendo según tipo');
         $dashboards = [
             1 => 'estudiante.dashboard',
