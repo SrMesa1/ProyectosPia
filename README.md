@@ -2,7 +2,7 @@
  
 # Miembros del equipo
 <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/Samuel.jpg" alt="Samuel Moreno Mesa" width="300"/>
-<p Samuel moreno mesa estudiante de desarrollo de software 4 semestre</p
+<pSamuel moreno mesa estudiante de desarrollo de software 4 semestre</p
 
 
 
