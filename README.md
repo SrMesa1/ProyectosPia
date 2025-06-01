@@ -45,6 +45,7 @@ D# 💻 Proyecto Pia
 </div>
 
 <br>
+
 <div align="center">
   <table width="700">
     <tr>
@@ -53,6 +54,21 @@ D# 💻 Proyecto Pia
       </td>
       <td style="padding-left: 20px;">
         <p style="text-align: left;">Juan David Lopez, estudiante de desarrollo de software, 4° semestre.</p>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<br>
+
+<div align="center">
+  <table width="700">
+    <tr>
+      <td>
+        <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/daniela.jpg" alt="Juan David Lopez" width="200" style="border-radius: 10px;">
+      </td>
+      <td style="padding-left: 20px;">
+        <p style="text-align: left;">Daniela Gonzalez Tarraz, estudiante de desarrollo de software, 4° semestre.</p>
       </td>
     </tr>
   </table>
