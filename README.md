@@ -19,7 +19,7 @@
   <table>
     <tr>
       <td>
-        <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/shelcy.jpg" alt="Shelcy Rondon" width="200" style="border-radius: 10px;">
+        <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/shelcy.jpeg" alt="Shelcy Rondon" width="200" style="border-radius: 10px;">
       </td>
       <td style="padding-left: 20px;">
         <p style="text-align: left;">Nombre del otro miembro, estudiante de desarrollo de software, 4° semestre.</p>
