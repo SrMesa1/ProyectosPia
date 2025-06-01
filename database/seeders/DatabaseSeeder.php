@@ -18,11 +18,18 @@ class DatabaseSeeder extends Seeder
             DepartamentoSeeder::class,
             ProgramaSeeder::class,
             
-            // Luego las asignaturas predefinidas
+            // Tipos de proyecto y asignaturas predefinidas
+            TipoProyectoSeeder::class,
             AsignaturaSeeder::class,
 
-            // Finalmente los usuarios y sus roles
-            UserSeeder::class, // Necesitamos crear este seeder
+            // Tipos de usuario y roles
+            TipoUsuarioSeeder::class,
+
+            // Usuarios y sus perfiles
+            UserSeeder::class,
+
+            // Finalmente los proyectos de prueba
+            ProyectoSeeder::class
         ]);
     }
 }

@@ -31,8 +31,8 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'nombre_usuario' => ['required', 'string', 'max:50', 'unique:usuarios,nombre_usuario'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:usuarios,email'],
+            'nombre_usuario' => ['required', 'string', 'max:50', 'unique:usuario,nombre_usuario'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:usuario,email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'id_tipo_usuario' => ['required', 'integer', 'exists:tipo_usuario,id_tipo_usuario'],
         ]);
@@ -51,11 +51,11 @@ class RegisteredUserController extends Controller
         // Redirigir según el tipo de usuario
         switch($request->id_tipo_usuario) {
             case 1: // Estudiante
-                return redirect()->route('estudiante.create');
+                return redirect()->route('registro.estudiante.create');
             case 2: // Docente
-                return redirect()->route('docente.create');
+                return redirect()->route('registro.docente.create');
             case 3: // Evaluador
-                return redirect()->route('evaluador.create');
+                return redirect()->route('registro.evaluador.create');
             default:
                 return redirect(RouteServiceProvider::HOME);
         }

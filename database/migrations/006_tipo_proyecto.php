@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('tipo_proyecto', function (Blueprint $table) {
             $table->id('id_tipo_proyecto');
-            $table->string('nombre', 50);
+            $table->string('nombre', 50)->unique();
+            $table->string('descripcion');
+            $table->integer('duracion_minima')->comment('Duración mínima en semanas');
+            $table->integer('duracion_maxima')->comment('Duración máxima en semanas');
             $table->timestamps();
-
         });
     }
 

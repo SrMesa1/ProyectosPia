@@ -6,6 +6,10 @@ use App\Http\Controllers\DocenteController;
 use App\Http\Controllers\EvaluadorController;
 use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\EvaluacionController;
+use App\Http\Controllers\AsignaturaController;
+use App\Http\Controllers\ProgramaController;
+use App\Http\Controllers\TipoProyectoController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,79 +24,13 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
+// Rutas públicas
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    if (Auth::check()) {
-        switch (Auth::user()->id_tipo_usuario) {
-            case 1: // Estudiante
-                return redirect()->route('estudiante.dashboard');
-            case 2: // Docente
-                return redirect()->route('docente.dashboard');
-            case 3: // Evaluador
-                return redirect()->route('evaluador.dashboard');
-        }
-    }
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Rutas para estudiantes
-    Route::get('/estudiante/create', [EstudianteController::class, 'create'])->name('estudiante.create');
-    Route::post('/estudiante', [EstudianteController::class, 'store'])->name('estudiante.store');
-});
-
-// Rutas de estudiante
-Route::middleware(['auth'])->group(function () {
-    Route::get('/estudiante/dashboard', [EstudianteController::class, 'dashboard'])->name('estudiante.dashboard');
-    Route::get('/estudiante/{id}/edit', [EstudianteController::class, 'edit'])->name('estudiante.edit');
-    Route::put('/estudiante/{id}', [EstudianteController::class, 'update'])->name('estudiante.update');
-    Route::get('/estudiante/{id}', [EstudianteController::class, 'show'])->name('estudiante.show');
-    Route::delete('/estudiante/{id}', [EstudianteController::class, 'destroy'])->name('estudiante.destroy');
-
-    // Rutas para proyectos
-    Route::resource('proyecto', ProyectoController::class);
-});
-
-// Rutas de docente
-Route::middleware(['auth'])->group(function () {
-    Route::get('/docente/dashboard', [DocenteController::class, 'dashboard'])->name('docente.dashboard');
-    Route::get('/docente/create', [DocenteController::class, 'create'])->name('docente.create');
-    Route::post('/docente', [DocenteController::class, 'store'])->name('docente.store');
-    Route::get('/docente/{id}/edit', [DocenteController::class, 'edit'])->name('docente.edit');
-    Route::put('/docente/{id}', [DocenteController::class, 'update'])->name('docente.update');
-    Route::get('/docente/{id}', [DocenteController::class, 'show'])->name('docente.show');
-    Route::delete('/docente/{id}', [DocenteController::class, 'destroy'])->name('docente.destroy');
-});
-
-// Rutas de evaluador
-Route::middleware(['auth'])->group(function () {
-    Route::get('/evaluador/dashboard', [EvaluadorController::class, 'dashboard'])->name('evaluador.dashboard');
-    Route::get('/evaluador/create', [EvaluadorController::class, 'create'])->name('evaluador.create');
-    Route::post('/evaluador', [EvaluadorController::class, 'store'])->name('evaluador.store');
-    Route::get('/evaluador/{id}', [EvaluadorController::class, 'show'])->name('evaluador.show');
-    Route::get('/evaluador/{id}/edit', [EvaluadorController::class, 'edit'])->name('evaluador.edit');
-    Route::put('/evaluador/{id}', [EvaluadorController::class, 'update'])->name('evaluador.update');
-    Route::delete('/evaluador/{id}', [EvaluadorController::class, 'destroy'])->name('evaluador.destroy');
-});
-
-// Rutas para evaluaciones
-Route::middleware(['auth'])->group(function () {
-    Route::get('/evaluacion/create/{id_proyecto}', [EvaluacionController::class, 'create'])->name('evaluacion.create');
-    Route::post('/evaluacion/{id_proyecto}', [EvaluacionController::class, 'store'])->name('evaluacion.store');
-    Route::get('/evaluacion/{id}/edit', [EvaluacionController::class, 'edit'])->name('evaluacion.edit');
-    Route::put('/evaluacion/{id}', [EvaluacionController::class, 'update'])->name('evaluacion.update');
-    Route::delete('/evaluacion/{id}', [EvaluacionController::class, 'destroy'])->name('evaluacion.destroy');
-});
-
-// Rutas públicas para registro inicial
-Route::middleware('web')->group(function () {
+// Rutas de autenticación y registro inicial
+Route::middleware('guest')->group(function () {
     Route::get('/registro/estudiante', [EstudianteController::class, 'create'])
         ->name('registro.estudiante.create');
     Route::post('/registro/estudiante', [EstudianteController::class, 'store'])
@@ -104,9 +42,54 @@ Route::middleware('web')->group(function () {
         ->name('registro.docente.store');
 
     Route::get('/registro/evaluador', [EvaluadorController::class, 'create'])
-        ->name('evaluador.create');
+        ->name('registro.evaluador.create');
     Route::post('/registro/evaluador', [EvaluadorController::class, 'store'])
-        ->name('evaluador.store');
+        ->name('registro.evaluador.store');
+});
+
+// Dashboard y perfil
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// Rutas para estudiantes
+Route::middleware(['auth', 'tipo.usuario:estudiante'])->group(function () {
+    Route::get('/estudiante/dashboard', [EstudianteController::class, 'dashboard'])->name('estudiante.dashboard');
+    Route::get('/estudiante/edit', [EstudianteController::class, 'edit'])->name('estudiante.edit');
+    Route::put('/estudiante', [EstudianteController::class, 'update'])->name('estudiante.update');
+    Route::resource('proyecto', ProyectoController::class)->except(['index', 'show']);
+});
+
+// Rutas para docentes
+Route::middleware(['auth', 'tipo.usuario:docente'])->group(function () {
+    Route::get('/docente/dashboard', [DocenteController::class, 'dashboard'])->name('docente.dashboard');
+    Route::get('/docente/edit', [DocenteController::class, 'edit'])->name('docente.edit');
+    Route::put('/docente', [DocenteController::class, 'update'])->name('docente.update');
+    Route::get('/docente/proyectos', [ProyectoController::class, 'index'])->name('docente.proyectos');
+    Route::resource('asignatura', AsignaturaController::class);
+});
+
+// Rutas para evaluadores
+Route::middleware(['auth', 'tipo.usuario:evaluador'])->group(function () {
+    Route::get('/evaluador/dashboard', [EvaluadorController::class, 'dashboard'])->name('evaluador.dashboard');
+    Route::get('/evaluador/edit', [EvaluadorController::class, 'edit'])->name('evaluador.edit');
+    Route::put('/evaluador', [EvaluadorController::class, 'update'])->name('evaluador.update');
+    Route::get('/evaluacion/create/{id_proyecto}', [EvaluacionController::class, 'create'])->name('evaluacion.create');
+    Route::post('/evaluacion/{id_proyecto}', [EvaluacionController::class, 'store'])->name('evaluacion.store');
+    Route::get('/evaluacion/{id}/edit', [EvaluacionController::class, 'edit'])->name('evaluacion.edit');
+    Route::put('/evaluacion/{id}', [EvaluacionController::class, 'update'])->name('evaluacion.update');
+    Route::delete('/evaluacion/{id}', [EvaluacionController::class, 'destroy'])->name('evaluacion.destroy');
+});
+
+// Rutas compartidas (accesibles por todos los usuarios autenticados)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/proyecto/{proyecto}', [ProyectoController::class, 'show'])->name('proyecto.show');
+    Route::get('/programa/{programa}', [ProgramaController::class, 'show'])->name('programa.show');
+    Route::get('/asignatura/{asignatura}', [AsignaturaController::class, 'show'])->name('asignatura.show');
 });
 
 require __DIR__.'/auth.php';

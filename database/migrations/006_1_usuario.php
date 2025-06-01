@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('usuario', function (Blueprint $table) {
             $table->id('id_usuario');
+            $table->string('nombre_usuario', 50)->unique();
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('tipo_usuario', ['estudiante', 'docente', 'evaluador', 'admin'])->default('estudiante');
+            $table->foreignId('id_tipo_usuario')->references('id_tipo_usuario')->on('tipo_usuario');
             $table->boolean('perfil_completado')->default(false);
             $table->rememberToken();
             $table->timestamps();

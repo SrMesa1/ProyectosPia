@@ -15,8 +15,10 @@ class Proyecto extends Model
     protected $fillable = [
         'titulo',
         'descripcion',
-        'tipo',
+        'id_tipo_proyecto',
         'estado',
+        'fecha_inicio',
+        'fecha_fin',
         'id_estudiante',
         'id_asignatura',
         'grupo'
@@ -24,7 +26,16 @@ class Proyecto extends Model
 
     protected $casts = [
         'created_at' => 'datetime',
-        'updated_at' => 'datetime'
+        'updated_at' => 'datetime',
+        'fecha_inicio' => 'date',
+        'fecha_fin' => 'date'
+    ];
+
+    const ESTADOS = [
+        'pendiente' => 'Pendiente',
+        'en_curso' => 'En Curso',
+        'completado' => 'Completado',
+        'cancelado' => 'Cancelado'
     ];
 
     public function estudiante()
@@ -40,5 +51,15 @@ class Proyecto extends Model
     public function evaluaciones()
     {
         return $this->hasMany(Evaluacion::class, 'id_proyecto');
+    }
+
+    public function tipoProyecto()
+    {
+        return $this->belongsTo(TipoProyecto::class, 'id_tipo_proyecto');
+    }
+
+    public function getEstadoNombreAttribute()
+    {
+        return self::ESTADOS[$this->estado] ?? $this->estado;
     }
 }

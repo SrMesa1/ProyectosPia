@@ -35,6 +35,6 @@ class Estudiante extends Model
 
     public function proyectos()
     {
-        return $this->belongsToMany(Proyecto::class, 'proyecto_estudiante', 'id_estudiante', 'id_proyecto');
+        return $this->hasMany(Proyecto::class, 'id_estudiante', 'id_estudiante');
     }
 }

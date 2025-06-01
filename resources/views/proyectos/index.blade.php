@@ -7,13 +7,15 @@
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-semibold text-gray-800">Lista de Proyectos</h2>
-                    <a href="{{ route('proyecto.create') }}" 
-                       class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                        </svg>
-                        Nuevo Proyecto
-                    </a>
+                    @if(Auth::user()->tipo_usuario === 'estudiante')
+                        <a href="{{ route('proyecto.create') }}" 
+                           class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg inline-flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Nuevo Proyecto
+                        </a>
+                    @endif
                 </div>
 
                 @if(session('success'))
@@ -39,11 +41,12 @@
                                             <span class="text-gray-500">Estado:</span>
                                             <span class="px-2 py-1 text-xs font-semibold rounded-full
                                                 @if($proyecto->estado === 'pendiente') bg-yellow-100 text-yellow-800
-                                                @elseif($proyecto->estado === 'en_progreso') bg-blue-100 text-blue-800
+                                                @elseif($proyecto->estado === 'en_curso') bg-blue-100 text-blue-800
                                                 @elseif($proyecto->estado === 'completado') bg-green-100 text-green-800
+                                                @elseif($proyecto->estado === 'cancelado') bg-red-100 text-red-800
                                                 @else bg-gray-100 text-gray-800
                                                 @endif">
-                                                {{ ucfirst($proyecto->estado) }}
+                                                {{ $proyecto->estado_nombre }}
                                             </span>
                                         </div>
                                         <div>
@@ -54,13 +57,28 @@
                                             <span class="text-gray-500">Fin:</span>
                                             <span class="font-medium">{{ $proyecto->fecha_fin->format('d/m/Y') }}</span>
                                         </div>
+                                        <div>
+                                            <span class="text-gray-500">Asignatura:</span>
+                                            <span class="font-medium">{{ $proyecto->asignatura->nombre }}</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-gray-500">Grupo:</span>
+                                            <span class="font-medium">{{ $proyecto->grupo }}</span>
+                                        </div>
                                     </div>
 
-                                    <div class="flex justify-end">
-                                        <a href="{{ route('proyecto.show', $proyecto->id_proyecto) }}" 
+                                    <div class="flex justify-end space-x-2">
+                                        <a href="{{ route('proyecto.show', $proyecto) }}" 
                                            class="text-blue-600 hover:text-blue-800 font-medium text-sm">
-                                            Ver detalles →
+                                            Ver detalles
                                         </a>
+                                        @if(Auth::user()->tipo_usuario === 'estudiante' && Auth::user()->estudiante->id_estudiante === $proyecto->id_estudiante)
+                                            <span class="text-gray-300">|</span>
+                                            <a href="{{ route('proyecto.edit', $proyecto) }}" 
+                                               class="text-green-600 hover:text-green-800 font-medium text-sm">
+                                                Editar
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -69,7 +87,9 @@
                 @else
                     <div class="text-center py-8">
                         <p class="text-gray-600">No hay proyectos registrados.</p>
-                        <p class="text-sm text-gray-500 mt-1">Comienza creando tu primer proyecto.</p>
+                        @if(Auth::user()->tipo_usuario === 'estudiante')
+                            <p class="text-sm text-gray-500 mt-1">Comienza creando tu primer proyecto.</p>
+                        @endif
                     </div>
                 @endif
             </div>

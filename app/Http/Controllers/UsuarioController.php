@@ -47,8 +47,8 @@ class UsuarioController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre_usuario' => ['required', 'string', 'max:50', 'unique:usuarios'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:usuarios'],
+            'nombre_usuario' => ['required', 'string', 'max:50', 'unique:usuario'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:usuario'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'id_tipo_usuario' => ['required', 'exists:tipo_usuario,id_tipo_usuario']
         ]);

@@ -11,7 +11,7 @@ class Usuario extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    protected $table = 'usuarios';
+    protected $table = 'usuario';
     protected $primaryKey = 'id_usuario';
 
     protected $fillable = [
@@ -55,6 +55,11 @@ class Usuario extends Authenticatable
     
     public function roles() { 
         return $this->belongsToMany(Rol::class, 'usuario_rol', 'id_usuario', 'id_rol'); 
+    }
+
+    public function getTipoNombreAttribute()
+    {
+        return $this->tipoUsuario ? $this->tipoUsuario->nombre : null;
     }
 
     public function hasCompletedProfile(): bool
