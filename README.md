@@ -14,6 +14,7 @@ D# 💻 Proyecto Pia
   </table>
 </div>
 
+
 <br>
 <div align="center">
   <table width="700">
@@ -29,6 +30,21 @@ D# 💻 Proyecto Pia
 </div>
 
 <br>
+<div align="center">
+  <table width="700">
+    <tr>
+      <td>
+        <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/juliana.jpg" alt="Juliana Berrio" width="200" height="250" style="border-radius: 10px; object-fit: cover;">
+      </td>
+      <td style="padding-left: 20px;">
+        <p style="text-align: left;">
+          Juliana Berrio, estudiante de desarrollo de software, 4° semestre.
+        </p>
+      </td>
+    </tr>
+  </table>
+</div>
+
 <div align="center">
   <table width="700">
     <tr>
