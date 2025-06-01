@@ -1,10 +1,6 @@
 # 💻 Proyecto Pia
  
 # Miembros del equipo
-<img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/Samuel.jpg" alt="Samuel Moreno Mesa" width="300"/>
-Samuel Moreno Mesa, estudiante de desarrollo de software, 4° semestre.
-
-
 <div align="center">
   <table>
     <tr>
@@ -17,6 +13,8 @@ Samuel Moreno Mesa, estudiante de desarrollo de software, 4° semestre.
     </tr>
   </table>
 </div>
+
+
 
 
 
