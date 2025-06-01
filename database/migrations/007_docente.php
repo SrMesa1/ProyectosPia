@@ -16,10 +16,9 @@ return new class extends Migration
             $table->string('nombre', 100);
             $table->string('correo', 100)->unique();
             $table->string('documento', 20)->unique();
-            $table->unsignedBigInteger('id_departamento');
+            $table->foreignId('id_departamento')->constrained('departamento', 'id_departamento')->onDelete('cascade');
+            $table->foreignId('id_usuario')->constrained('usuario', 'id_usuario')->onDelete('cascade');
             $table->timestamps();
-
-            $table->foreign('id_departamento')->references('id_departamento')->on('departamento')->onDelete('cascade');
         });
     }
 

@@ -7,20 +7,36 @@ use Illuminate\Database\Eloquent\Model;
 
 class Docente extends Model
 {
-     use HasFactory;
+    use HasFactory;
 
     protected $table = 'docente';
     protected $primaryKey = 'id_docente';
     public $timestamps = false;
 
-    public function departamento()
+    protected $fillable = [
+        'nombre',
+        'numero_empleado',
+        'especialidad',
+        'correo',
+        'id_programa'
+    ];
+
+    public function programa()
     {
-        return $this->belongsTo(Departamento::class, 'id_departamento');
+        return $this->belongsTo(Programa::class, 'id_programa');
+    }
+
+    public function asignaturas()
+    {
+        return $this->belongsToMany(Asignatura::class, 'docente_asignatura', 'id_docente', 'id_asignatura')
+            ->withPivot('grupo')
+            ->withTimestamps();
     }
 
     public function proyectos()
     {
         return $this->belongsToMany(Proyecto::class, 'proyecto_asignaturas', 'id_docente', 'id_proyecto')
-            ->withPivot('id_asignatura', 'grupo');
+            ->withPivot(['id_asignatura', 'grupo'])
+            ->with(['tipoProyecto', 'asignaturas']);
     }
 }

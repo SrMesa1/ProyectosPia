@@ -22,6 +22,7 @@ class Usuario extends Authenticatable
         'id_docente',
         'id_evaluador',
         'id_tipo_usuario',
+        'perfil_completado',
     ];
 
     protected $hidden = [
@@ -32,6 +33,7 @@ class Usuario extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'perfil_completado' => 'boolean',
     ];
 
     // Relaciones
@@ -53,6 +55,24 @@ class Usuario extends Authenticatable
     
     public function roles() { 
         return $this->belongsToMany(Rol::class, 'usuario_rol', 'id_usuario', 'id_rol'); 
+    }
+
+    public function hasCompletedProfile(): bool
+    {
+        if (!$this->id_tipo_usuario) {
+            return false;
+        }
+
+        switch($this->id_tipo_usuario) {
+            case 1: // Estudiante
+                return $this->estudiante()->exists();
+            case 2: // Docente
+                return $this->docente()->exists();
+            case 3: // Evaluador
+                return $this->evaluador()->exists();
+            default:
+                return true;
+        }
     }
 }
 

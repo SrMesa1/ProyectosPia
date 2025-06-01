@@ -13,11 +13,9 @@ return new class extends Migration
     {
         Schema::create('programa', function (Blueprint $table) {
             $table->id('id_programa');
-            $table->string('nombre', 100);
-            $table->unsignedBigInteger('id_facultad');
+            $table->string('nombre');
+            $table->foreignId('id_departamento')->constrained('departamento', 'id_departamento')->onDelete('cascade');
             $table->timestamps();
-
-            $table->foreign('id_facultad')->references('id_facultad')->on('facultad')->onDelete('cascade');
         });
     }
 

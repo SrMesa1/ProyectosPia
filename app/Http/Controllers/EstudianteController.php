@@ -3,94 +3,126 @@
 namespace App\Http\Controllers;
 
 use App\Models\Estudiante;
-use App\Models\Usuario;
 use App\Models\Programa;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EstudianteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function __construct()
     {
-        $estudiantes = Estudiante::with('programa')->get();
-        return view('estudiantes.index', compact('estudiantes'));
+        $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            if (Auth::user()->id_tipo_usuario !== 1) {
+                return redirect('/dashboard')->with('error', 'Acceso no autorizado.');
+            }
+            return $next($request);
+        })->except(['create', 'store']);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Request $request)
+    public function dashboard()
     {
-        $user_id = $request->query('user_id');
+        $estudiante = Estudiante::where('id_usuario', Auth::id())->first();
+        
+        if (!$estudiante) {
+            return redirect()->route('estudiante.create')
+                ->with('info', 'Por favor, complete su perfil de estudiante.');
+        }
+        
+        return view('estudiante.dashboard', compact('estudiante'));
+    }
+
+    public function create()
+    {
+        // Verificar si ya existe un perfil de estudiante
+        $estudiante = Estudiante::where('id_usuario', Auth::id())->first();
+        if ($estudiante) {
+            return redirect()->route('estudiante.dashboard');
+        }
+        
         $programas = Programa::all();
-        return view('estudiante.create', compact('user_id', 'programas'));
+        return view('estudiante.create', compact('programas'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'correo' => 'required|email|unique:estudiantes,correo',
-            'documento' => 'required|string|unique:estudiantes,documento',
-            'id_programa' => 'required|exists:programas,id',
-            'user_id' => 'required|exists:usuarios,id'
+            'codigo' => 'required|string|max:20|unique:estudiante,codigo',
+            'semestre' => 'required|integer|min:1|max:10',
+            'id_programa' => 'required|exists:programa,id_programa',
         ]);
 
-        $estudiante = Estudiante::create($request->all());
-        
-        // Actualizar el usuario con el ID del estudiante
-        $usuario = Usuario::findOrFail($request->user_id);
-        $usuario->update(['id_estudiante' => $estudiante->id]);
+        $estudiante = new Estudiante();
+        $estudiante->nombre = $request->nombre;
+        $estudiante->codigo = $request->codigo;
+        $estudiante->semestre = $request->semestre;
+        $estudiante->id_programa = $request->id_programa;
+        $estudiante->id_usuario = Auth::id();
+        $estudiante->save();
 
-        return redirect()->route('home')->with('success', 'Registro de estudiante completado exitosamente.');
+        // Actualizar el estado del usuario para indicar que completó su perfil
+        $usuario = Usuario::find(Auth::id());
+        $usuario->perfil_completado = true;
+        $usuario->save();
+
+        return redirect()->route('dashboard')->with('success', 'Perfil de estudiante creado exitosamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $estudiante = Estudiante::with('programa')->findOrFail($id);
-        return view('estudiantes.show', compact('estudiante'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function show($id)
     {
         $estudiante = Estudiante::findOrFail($id);
+        if ($estudiante->id_usuario !== Auth::id()) {
+            return redirect()->route('estudiante.dashboard')
+                ->with('error', 'No tiene permiso para ver este perfil.');
+        }
+        return view('estudiante.show', compact('estudiante'));
+    }
+
+    public function edit($id)
+    {
+        $estudiante = Estudiante::findOrFail($id);
+        if ($estudiante->id_usuario !== Auth::id()) {
+            return redirect()->route('estudiante.dashboard')
+                ->with('error', 'No tiene permiso para editar este perfil.');
+        }
         $programas = Programa::all();
-        return view('estudiantes.edit', compact('estudiante', 'programas'));
+        return view('estudiante.edit', compact('estudiante', 'programas'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
+        $estudiante = Estudiante::findOrFail($id);
+        if ($estudiante->id_usuario !== Auth::id()) {
+            return redirect()->route('estudiante.dashboard')
+                ->with('error', 'No tiene permiso para actualizar este perfil.');
+        }
+
         $request->validate([
-            'nombre' => 'required',
-            'correo' => 'required|email|unique:estudiantes,correo,'.$id,
-            'documento' => 'required|unique:estudiantes,documento,'.$id,
-            'id_programa' => 'required|exists:programas,id'
+            'nombre' => 'required|string|max:255',
+            'codigo' => 'required|string|unique:estudiante,codigo,'.$id.',id_estudiante',
+            'semestre' => 'required|integer|min:1|max:10',
+            'id_programa' => 'required|exists:programa,id_programa'
         ]);
-        Estudiante::findOrFail($id)->update($request->all());
-        return redirect()->route('estudiantes.index')->with('success', 'Estudiante actualizado.');
 
+        $estudiante->update($request->all());
+
+        return redirect()->route('estudiante.dashboard')
+            ->with('success', 'Perfil actualizado exitosamente.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        Estudiante::destroy($id);
-        return redirect()->route('estudiantes.index')->with('success', 'Estudiante eliminado.');
+        $estudiante = Estudiante::findOrFail($id);
+        if ($estudiante->id_usuario !== Auth::id()) {
+            return redirect()->route('estudiante.dashboard')
+                ->with('error', 'No tiene permiso para eliminar este perfil.');
+        }
+        
+        $estudiante->delete();
+
+        return redirect()->route('dashboard')
+            ->with('success', 'Perfil eliminado exitosamente.');
     }
 }

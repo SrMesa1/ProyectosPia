@@ -11,7 +11,17 @@ class Programa extends Model
 
     protected $table = 'programa';
     protected $primaryKey = 'id_programa';
-    public $timestamps = false;
+    public $timestamps = true;
+
+    protected $fillable = [
+        'nombre',
+        'descripcion'
+    ];
+
+    public function facultad()
+    {
+        return $this->belongsTo(Facultad::class, 'id_facultad', 'id_facultad');
+    }
 
     public function departamento()
     {
@@ -25,6 +35,11 @@ class Programa extends Model
 
     public function estudiantes()
     {
-        return $this->hasMany(Estudiante::class, 'id_programa');
+        return $this->hasMany(Estudiante::class, 'id_programa', 'id_programa');
+    }
+
+    public function docentes()
+    {
+        return $this->hasMany(Docente::class, 'id_programa', 'id_programa');
     }
 }

@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::create('estudiante', function (Blueprint $table) {
             $table->id('id_estudiante');
-            $table->string('nombre', 100);
-            $table->string('correo', 100)->unique();
-            $table->string('documento', 20)->unique();
-            $table->unsignedBigInteger('id_programa');
+            $table->string('nombre');
+            $table->string('matricula')->unique();
+            $table->string('correo')->unique();
+            $table->foreignId('id_programa')->constrained('programa', 'id_programa')->onDelete('cascade');
+            $table->foreignId('id_usuario')->constrained('usuario', 'id_usuario')->onDelete('cascade');
             $table->timestamps();
-
-            $table->foreign('id_programa')->references('id_programa')->on('programa')->onDelete('cascade');
         });
     }
 
@@ -30,4 +29,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('estudiante');
     }
-};
+}; 

@@ -3,93 +3,161 @@
 namespace App\Http\Controllers;
 
 use App\Models\Docente;
-use App\Models\Usuario;
-use App\Models\Departamento;
+use App\Models\Asignatura;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DocenteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function __construct()
     {
-        $docentes = Docente::with('departamento')->get();
-        return view('docentes.index', compact('docentes'));
+        $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            if (Auth::user()->tipo_usuario !== 'docente') {
+                return redirect('/dashboard')->with('error', 'Acceso no autorizado.');
+            }
+            return $next($request);
+        })->except(['create', 'store']);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Request $request)
+    public function dashboard()
     {
-        $user_id = $request->query('user_id');
-        $departamentos = Departamento::all();
-        return view('docente.create', compact('user_id', 'departamentos'));
+        $docente = Docente::where('correo', Auth::user()->email)->first();
+        
+        if (!$docente) {
+            return redirect()->route('docente.create')
+                ->with('info', 'Por favor, complete su perfil de docente.');
+        }
+
+        // Obtener los proyectos de las asignaturas que imparte el docente
+        $proyectos = $docente->proyectos()
+            ->with(['tipoProyecto', 'estudiantes', 'asignaturas'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Obtener las asignaturas que imparte el docente
+        $asignaturas = $docente->asignaturas()->get();
+
+        return view('docente.dashboard', compact('docente', 'proyectos', 'asignaturas'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function create()
+    {
+        // Verificar si ya existe un perfil de docente
+        $docente = Docente::where('correo', Auth::user()->email)->first();
+        if ($docente) {
+            return redirect()->route('docente.dashboard');
+        }
+
+        // Obtener la lista de asignaturas disponibles
+        $asignaturas = Asignatura::all();
+        
+        return view('docente.create', compact('asignaturas'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'correo' => 'required|email|unique:docentes,correo',
-            'documento' => 'required|string|unique:docentes,documento',
-            'id_departamento' => 'required|exists:departamentos,id',
-            'user_id' => 'required|exists:usuarios,id'
+            'numero_empleado' => 'required|string|unique:docente,numero_empleado',
+            'especialidad' => 'required|string|max:255',
+            'asignaturas' => 'required|array|min:1',
+            'asignaturas.*.id_asignatura' => 'required|exists:asignatura,id_asignatura',
+            'asignaturas.*.grupo' => 'required|string|max:10'
         ]);
 
-        $docente = Docente::create($request->all());
-        
-        // Actualizar el usuario con el ID del docente
-        $usuario = Usuario::findOrFail($request->user_id);
-        $usuario->update(['id_docente' => $docente->id]);
+        $docente = new Docente();
+        $docente->nombre = $request->nombre;
+        $docente->numero_empleado = $request->numero_empleado;
+        $docente->especialidad = $request->especialidad;
+        $docente->correo = Auth::user()->email;
+        $docente->save();
 
-        return redirect()->route('home')->with('success', 'Registro de docente completado exitosamente.');
+        // Asociar las asignaturas con sus grupos
+        foreach ($request->asignaturas as $asignatura) {
+            $docente->asignaturas()->attach($asignatura['id_asignatura'], [
+                'grupo' => $asignatura['grupo']
+            ]);
+        }
+
+        // Actualizar el estado del usuario para indicar que completó su perfil
+        $usuario = User::find(Auth::id());
+        $usuario->perfil_completado = true;
+        $usuario->save();
+
+        return redirect()->route('docente.dashboard')
+            ->with('success', 'Perfil de docente creado exitosamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
-        $docente = Docente::with('departamento')->findOrFail($id);
-        return view('docentes.show', compact('docente'));
+        $docente = Docente::with('asignaturas')->findOrFail($id);
+        if ($docente->correo !== Auth::user()->email) {
+            return redirect()->route('docente.dashboard')
+                ->with('error', 'No tiene permiso para ver este perfil.');
+        }
+        return view('docente.show', compact('docente'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit($id)
+    {
+        $docente = Docente::with('asignaturas')->findOrFail($id);
+        if ($docente->correo !== Auth::user()->email) {
+            return redirect()->route('docente.dashboard')
+                ->with('error', 'No tiene permiso para editar este perfil.');
+        }
+
+        $asignaturas = Asignatura::all();
+        return view('docente.edit', compact('docente', 'asignaturas'));
+    }
+
+    public function update(Request $request, $id)
     {
         $docente = Docente::findOrFail($id);
-        $departamentos = Departamento::all();
-        return view('docentes.edit', compact('docente', 'departamentos'));
-    }
+        if ($docente->correo !== Auth::user()->email) {
+            return redirect()->route('docente.dashboard')
+                ->with('error', 'No tiene permiso para actualizar este perfil.');
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-         $request->validate([
-            'nombre' => 'required',
-            'correo' => 'required|email|unique:docentes,correo,'.$id,
-            'documento' => 'required|unique:docentes,documento,'.$id,
-            'id_departamento' => 'required|exists:departamentos,id'
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'numero_empleado' => 'required|string|unique:docente,numero_empleado,'.$id.',id_docente',
+            'especialidad' => 'required|string|max:255',
+            'asignaturas' => 'required|array|min:1',
+            'asignaturas.*.id_asignatura' => 'required|exists:asignatura,id_asignatura',
+            'asignaturas.*.grupo' => 'required|string|max:10'
         ]);
-        Docente::findOrFail($id)->update($request->all());
-        return redirect()->route('docentes.index')->with('success', 'Docente actualizado.');
+
+        $docente->update([
+            'nombre' => $request->nombre,
+            'numero_empleado' => $request->numero_empleado,
+            'especialidad' => $request->especialidad
+        ]);
+
+        // Actualizar las asignaturas
+        $docente->asignaturas()->detach();
+        foreach ($request->asignaturas as $asignatura) {
+            $docente->asignaturas()->attach($asignatura['id_asignatura'], [
+                'grupo' => $asignatura['grupo']
+            ]);
+        }
+
+        return redirect()->route('docente.dashboard')
+            ->with('success', 'Perfil actualizado exitosamente.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        Docente::destroy($id);
-        return redirect()->route('docentes.index')->with('success', 'Docente eliminado.');
+        $docente = Docente::findOrFail($id);
+        if ($docente->correo !== Auth::user()->email) {
+            return redirect()->route('docente.dashboard')
+                ->with('error', 'No tiene permiso para eliminar este perfil.');
+        }
+        
+        $docente->delete();
+
+        return redirect()->route('dashboard')
+            ->with('success', 'Perfil eliminado exitosamente.');
     }
 }

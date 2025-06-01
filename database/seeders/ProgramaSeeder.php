@@ -7,11 +7,14 @@ use Illuminate\Support\Facades\DB;
 
 class ProgramaSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
         DB::table('programa')->insert([
-            'nombre' => 'Tecnología en Desarrollo de Software',
-            'id_facultad' => 1, // Referencia a la Facultad de Ingeniería
+            'nombre' => 'Ingeniería de Sistemas',
+            'id_departamento' => 1,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

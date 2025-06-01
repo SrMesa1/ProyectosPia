@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('facultad', function (Blueprint $table) {
             $table->id('id_facultad');
-            $table->string('nombre', 100);
-            $table->unsignedBigInteger('id_departamento');
+            $table->string('nombre');
+            $table->foreignId('id_institucion')->constrained('institucion', 'id_institucion');
             $table->timestamps();
         });
     }

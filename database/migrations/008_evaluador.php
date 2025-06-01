@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('evaluador', function (Blueprint $table) {
             $table->id('id_evaluador');
-            $table->string('nombre', 100);
-            $table->string('correo', 100)->unique();
-            $table->string('documento', 20)->unique();
+            $table->string('nombre');
+            $table->string('numero_empleado')->unique();
+            $table->string('especialidad');
+            $table->string('correo')->unique();
+            $table->string('institucion');
+            $table->foreignId('id_usuario')->constrained('usuario', 'id_usuario')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -27,4 +30,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('evaluador');
     }
-};
+}; 

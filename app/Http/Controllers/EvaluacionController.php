@@ -3,12 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Evaluacion;
-use App\Models\Proyecto;
 use App\Models\Evaluador;
+use App\Models\Proyecto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EvaluacionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            if (Auth::user()->tipo_usuario !== 'evaluador') {
+                return redirect('/dashboard')->with('error', 'Acceso no autorizado.');
+            }
+            return $next($request);
+        });
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -21,62 +33,103 @@ class EvaluacionController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($id_proyecto)
     {
-        $proyectos = Proyecto::all();
-        $evaluadores = Evaluador::all();
-        return view('evaluaciones.create', compact('proyectos', 'evaluadores'));
+        $proyecto = Proyecto::with(['tipoProyecto', 'estudiantes', 'asignaturas'])->findOrFail($id_proyecto);
+        $evaluador = Evaluador::where('correo', Auth::user()->email)->first();
+
+        if (!$evaluador) {
+            return redirect()->route('evaluador.create')
+                ->with('error', 'Debe completar su perfil de evaluador primero.');
+        }
+
+        return view('evaluacion.create', compact('proyecto', 'evaluador'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $id_proyecto)
     {
         $request->validate([
-            'id_proyecto' => 'required|exists:proyectos,id',
-            'id_evaluador' => 'required|exists:evaluadores,id',
-            'calificacion' => 'nullable|numeric|min:0|max:100',
-            'observaciones' => 'nullable|string',
-            'fecha_evaluacion' => 'nullable|date'
+            'calificacion' => 'required|numeric|min:0|max:5',
+            'comentarios' => 'required|string|max:1000',
         ]);
-        Evaluacion::create($request->all());
-        return redirect()->route('evaluaciones.index')->with('success', 'Evaluación registrada.');
+
+        $proyecto = Proyecto::findOrFail($id_proyecto);
+        $evaluador = Evaluador::where('correo', Auth::user()->email)->first();
+
+        $evaluacion = new Evaluacion();
+        $evaluacion->id_proyecto = $proyecto->id_proyecto;
+        $evaluacion->id_evaluador = $evaluador->id_evaluador;
+        $evaluacion->calificacion = $request->calificacion;
+        $evaluacion->comentarios = $request->comentarios;
+        $evaluacion->fecha_evaluacion = now();
+        $evaluacion->save();
+
+        return redirect()->route('evaluador.dashboard')
+            ->with('success', 'Evaluación registrada exitosamente.');
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
         $evaluacion = Evaluacion::findOrFail($id);
-        $proyectos = Proyecto::all();
-        $evaluadores = Evaluador::all();
-        return view('evaluaciones.edit', compact('evaluacion', 'proyectos', 'evaluadores'));
+        $evaluador = Evaluador::where('correo', Auth::user()->email)->first();
+
+        if ($evaluacion->id_evaluador !== $evaluador->id_evaluador) {
+            return redirect()->route('evaluador.dashboard')
+                ->with('error', 'No tiene permiso para editar esta evaluación.');
+        }
+
+        return view('evaluacion.edit', compact('evaluacion'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-         $request->validate([
-            'id_proyecto' => 'required|exists:proyectos,id',
-            'id_evaluador' => 'required|exists:evaluadores,id',
-            'calificacion' => 'nullable|numeric|min:0|max:100',
-            'observaciones' => 'nullable|string',
-            'fecha_evaluacion' => 'nullable|date'
+        $evaluacion = Evaluacion::findOrFail($id);
+        $evaluador = Evaluador::where('correo', Auth::user()->email)->first();
+
+        if ($evaluacion->id_evaluador !== $evaluador->id_evaluador) {
+            return redirect()->route('evaluador.dashboard')
+                ->with('error', 'No tiene permiso para actualizar esta evaluación.');
+        }
+
+        $request->validate([
+            'calificacion' => 'required|numeric|min:0|max:5',
+            'comentarios' => 'required|string|max:1000',
         ]);
-        Evaluacion::findOrFail($id)->update($request->all());
-        return redirect()->route('evaluaciones.index')->with('success', 'Evaluación actualizada.');
+
+        $evaluacion->calificacion = $request->calificacion;
+        $evaluacion->comentarios = $request->comentarios;
+        $evaluacion->fecha_evaluacion = now();
+        $evaluacion->save();
+
+        return redirect()->route('evaluador.dashboard')
+            ->with('success', 'Evaluación actualizada exitosamente.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-          Evaluacion::destroy($id);
-        return redirect()->route('evaluaciones.index')->with('success', 'Evaluación eliminada.');
+        $evaluacion = Evaluacion::findOrFail($id);
+        $evaluador = Evaluador::where('correo', Auth::user()->email)->first();
+
+        if ($evaluacion->id_evaluador !== $evaluador->id_evaluador) {
+            return redirect()->route('evaluador.dashboard')
+                ->with('error', 'No tiene permiso para eliminar esta evaluación.');
+        }
+
+        $evaluacion->delete();
+
+        return redirect()->route('evaluador.dashboard')
+            ->with('success', 'Evaluación eliminada exitosamente.');
     }
 }

@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('tipo_usuario', function (Blueprint $table) {
             $table->id('id_tipo_usuario');
-            $table->string('nombre', 50);
+            $table->string('nombre', 50)->unique();
+            $table->string('descripcion')->nullable();
             $table->timestamps();
         });
     }
@@ -23,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('proyecto_tipo_usuario');
+        Schema::dropIfExists('tipo_usuario');
     }
-};
+}; 

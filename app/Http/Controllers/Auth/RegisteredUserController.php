@@ -31,17 +31,17 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:usuarios'],
+            'nombre_usuario' => ['required', 'string', 'max:50', 'unique:usuarios,nombre_usuario'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:usuarios,email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'tipo_usuario' => ['required', 'in:1,2,3'],
+            'id_tipo_usuario' => ['required', 'integer', 'exists:tipo_usuario,id_tipo_usuario'],
         ]);
 
         $usuario = Usuario::create([
-            'nombre_usuario' => $request->name,
+            'nombre_usuario' => $request->nombre_usuario,
             'email' => $request->email,
-            'contraseña' => Hash::make($request->password),
-            'id_tipo_usuario' => $request->tipo_usuario,
+            'password' => Hash::make($request->password),
+            'id_tipo_usuario' => $request->id_tipo_usuario,
         ]);
 
         event(new Registered($usuario));
@@ -49,13 +49,13 @@ class RegisteredUserController extends Controller
         Auth::login($usuario);
 
         // Redirigir según el tipo de usuario
-        switch($request->tipo_usuario) {
-            case 1:
-                return redirect()->route('estudiante.create', ['user_id' => $usuario->id]);
-            case 2:
-                return redirect()->route('docente.create', ['user_id' => $usuario->id]);
-            case 3:
-                return redirect()->route('evaluador.create', ['user_id' => $usuario->id]);
+        switch($request->id_tipo_usuario) {
+            case 1: // Estudiante
+                return redirect()->route('estudiante.create');
+            case 2: // Docente
+                return redirect()->route('docente.create');
+            case 3: // Evaluador
+                return redirect()->route('evaluador.create');
             default:
                 return redirect(RouteServiceProvider::HOME);
         }

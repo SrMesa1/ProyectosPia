@@ -7,10 +7,13 @@ use Illuminate\Support\Facades\DB;
 
 class InstitucionSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
         DB::table('institucion')->insert([
-            'nombre' => 'Institución Universitaria Pascual Bravo',
+            'nombre' => 'Universidad Francisco de Paula Santander',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

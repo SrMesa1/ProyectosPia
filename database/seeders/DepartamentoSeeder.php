@@ -7,11 +7,14 @@ use Illuminate\Support\Facades\DB;
 
 class DepartamentoSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
         DB::table('departamento')->insert([
-            'nombre' => 'Departamento de Sistemas y Desarrollo',
-            'id_institucion' => 1, // Referencia a la Institución Pascual Bravo
+            'nombre' => 'Sistemas e Informática',
+            'id_facultad' => 1,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

@@ -13,15 +13,14 @@ return new class extends Migration
     {
         Schema::create('evaluacion', function (Blueprint $table) {
             $table->id('id_evaluacion');
-            $table->unsignedBigInteger('id_proyecto');
-            $table->unsignedBigInteger('id_evaluador');
-            $table->decimal('calificacion', 4, 2)->nullable();
-            $table->text('observaciones')->nullable();
-            $table->date('fecha_evaluacion')->nullable();
+            $table->foreignId('id_proyecto')->constrained('proyecto', 'id_proyecto')->onDelete('cascade');
+            $table->foreignId('id_evaluador')->constrained('evaluador', 'id_evaluador')->onDelete('cascade');
+            $table->integer('calificacion');
+            $table->text('comentarios')->nullable();
             $table->timestamps();
 
-            $table->foreign('id_proyecto')->references('id_proyecto')->on('proyecto')->onDelete('cascade');
-            $table->foreign('id_evaluador')->references('id_evaluador')->on('evaluador')->onDelete('cascade');
+            // Un evaluador solo puede evaluar un proyecto una vez
+            $table->unique(['id_proyecto', 'id_evaluador']);
         });
     }
 
@@ -32,4 +31,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('evaluacion');
     }
-};
+}; 

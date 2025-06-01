@@ -12,12 +12,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            // Primero las tablas base
             InstitucionSeeder::class,
-            DepartamentoSeeder::class,
             FacultadSeeder::class,
+            DepartamentoSeeder::class,
             ProgramaSeeder::class,
+            
+            // Luego las asignaturas predefinidas
             AsignaturaSeeder::class,
-            TipoUsuarioSeeder::class,
+
+            // Finalmente los usuarios y sus roles
+            UserSeeder::class, // Necesitamos crear este seeder
         ]);
     }
 }

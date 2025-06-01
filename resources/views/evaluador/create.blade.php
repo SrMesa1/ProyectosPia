@@ -9,7 +9,6 @@
 
                 <form method="POST" action="{{ route('evaluador.store') }}" class="space-y-6">
                     @csrf
-                    <input type="hidden" name="user_id" value="{{ $user_id }}">
 
                     <!-- Nombre Completo -->
                     <div>
@@ -18,34 +17,21 @@
                         </label>
                         <input id="nombre" type="text" 
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('nombre') border-red-500 @enderror"
-                            name="nombre" value="{{ old('nombre') }}" required>
+                            name="nombre" value="{{ old('nombre') }}" required autofocus>
                         @error('nombre')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <!-- Correo Electrónico -->
+                    <!-- Número de Empleado -->
                     <div>
-                        <label for="correo" class="block text-sm font-medium text-gray-700">
-                            {{ __('Correo Electrónico') }}
+                        <label for="numero_empleado" class="block text-sm font-medium text-gray-700">
+                            {{ __('Número de Empleado') }}
                         </label>
-                        <input id="correo" type="email" 
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('correo') border-red-500 @enderror"
-                            name="correo" value="{{ old('correo') }}" required>
-                        @error('correo')
-                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Documento de Identidad -->
-                    <div>
-                        <label for="documento" class="block text-sm font-medium text-gray-700">
-                            {{ __('Documento de Identidad') }}
-                        </label>
-                        <input id="documento" type="text" 
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('documento') border-red-500 @enderror"
-                            name="documento" value="{{ old('documento') }}" required>
-                        @error('documento')
+                        <input id="numero_empleado" type="text" 
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('numero_empleado') border-red-500 @enderror"
+                            name="numero_empleado" value="{{ old('numero_empleado') }}" required>
+                        @error('numero_empleado')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -63,9 +49,22 @@
                         @enderror
                     </div>
 
+                    <!-- Institución -->
+                    <div>
+                        <label for="institucion" class="block text-sm font-medium text-gray-700">
+                            {{ __('Institución') }}
+                        </label>
+                        <input id="institucion" type="text" 
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('institucion') border-red-500 @enderror"
+                            name="institucion" value="{{ old('institucion') }}" required>
+                        @error('institucion')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <div class="flex items-center justify-end mt-6">
-                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                            {{ __('Completar Registro') }}
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            {{ __('Registrar') }}
                         </button>
                     </div>
                 </form>

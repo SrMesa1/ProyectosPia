@@ -3,89 +3,130 @@
 namespace App\Http\Controllers;
 
 use App\Models\Evaluador;
-use App\Models\Usuario;
+use App\Models\Proyecto;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EvaluadorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function __construct()
     {
-        $evaluadores = Evaluador::all();
-        return view('evaluadores.index', compact('evaluadores'));
+        $this->middleware('auth');
+        $this->middleware(function ($request, $next) {
+            if (Auth::user()->tipo_usuario !== 'evaluador') {
+                return redirect('/dashboard')->with('error', 'Acceso no autorizado.');
+            }
+            return $next($request);
+        })->except(['create', 'store']);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Request $request)
+    public function dashboard()
     {
-        $user_id = $request->query('user_id');
-        return view('evaluador.create', compact('user_id'));
+        $evaluador = Evaluador::where('correo', Auth::user()->email)->first();
+        
+        if (!$evaluador) {
+            return redirect()->route('evaluador.create')
+                ->with('info', 'Por favor, complete su perfil de evaluador.');
+        }
+
+        // Obtener todos los proyectos con sus relaciones
+        $proyectos = Proyecto::with(['tipoProyecto', 'estudiantes', 'asignaturas', 'evaluaciones'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('evaluador.dashboard', compact('evaluador', 'proyectos'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function create()
+    {
+        // Verificar si ya existe un perfil de evaluador
+        $evaluador = Evaluador::where('correo', Auth::user()->email)->first();
+        if ($evaluador) {
+            return redirect()->route('evaluador.dashboard');
+        }
+        
+        return view('evaluador.create');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'correo' => 'required|email|unique:evaluadores,correo',
-            'documento' => 'required|string|unique:evaluadores,documento',
+            'numero_empleado' => 'required|string|unique:evaluador,numero_empleado',
             'especialidad' => 'required|string|max:255',
-            'user_id' => 'required|exists:usuarios,id'
+            'institucion' => 'required|string|max:255'
         ]);
 
-        $evaluador = Evaluador::create($request->all());
+        $evaluador = new Evaluador();
+        $evaluador->nombre = $request->nombre;
+        $evaluador->numero_empleado = $request->numero_empleado;
+        $evaluador->especialidad = $request->especialidad;
+        $evaluador->institucion = $request->institucion;
+        $evaluador->correo = Auth::user()->email;
+        $evaluador->save();
+
+        // Actualizar el estado del usuario para indicar que completó su perfil
+        $usuario = User::find(Auth::id());
+        $usuario->perfil_completado = true;
+        $usuario->save();
+
+        return redirect()->route('evaluador.dashboard')
+            ->with('success', 'Perfil de evaluador creado exitosamente.');
+    }
+
+    public function show($id)
+    {
+        $evaluador = Evaluador::findOrFail($id);
+        if ($evaluador->correo !== Auth::user()->email) {
+            return redirect()->route('evaluador.dashboard')
+                ->with('error', 'No tiene permiso para ver este perfil.');
+        }
+        return view('evaluador.show', compact('evaluador'));
+    }
+
+    public function edit($id)
+    {
+        $evaluador = Evaluador::findOrFail($id);
+        if ($evaluador->correo !== Auth::user()->email) {
+            return redirect()->route('evaluador.dashboard')
+                ->with('error', 'No tiene permiso para editar este perfil.');
+        }
+        return view('evaluador.edit', compact('evaluador'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $evaluador = Evaluador::findOrFail($id);
+        if ($evaluador->correo !== Auth::user()->email) {
+            return redirect()->route('evaluador.dashboard')
+                ->with('error', 'No tiene permiso para actualizar este perfil.');
+        }
+
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'numero_empleado' => 'required|string|unique:evaluador,numero_empleado,'.$id.',id_evaluador',
+            'especialidad' => 'required|string|max:255',
+            'institucion' => 'required|string|max:255'
+        ]);
+
+        $evaluador->update($request->all());
+
+        return redirect()->route('evaluador.dashboard')
+            ->with('success', 'Perfil actualizado exitosamente.');
+    }
+
+    public function destroy($id)
+    {
+        $evaluador = Evaluador::findOrFail($id);
+        if ($evaluador->correo !== Auth::user()->email) {
+            return redirect()->route('evaluador.dashboard')
+                ->with('error', 'No tiene permiso para eliminar este perfil.');
+        }
         
-        // Actualizar el usuario con el ID del evaluador
-        $usuario = Usuario::findOrFail($request->user_id);
-        $usuario->update(['id_evaluador' => $evaluador->id]);
+        $evaluador->delete();
 
-        return redirect()->route('home')->with('success', 'Registro de evaluador completado exitosamente.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $evaluador = Evaluador::findOrFail($id);
-        return view('evaluadores.show', compact('evaluador'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $evaluador = Evaluador::findOrFail($id);
-        return view('evaluadores.edit', compact('evaluador'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-         $request->validate([
-            'nombre' => 'required',
-            'correo' => 'required|email|unique:evaluadores,correo,'.$id,
-            'documento' => 'required|unique:evaluadores,documento,'.$id
-        ]);
-        Evaluador::findOrFail($id)->update($request->all());
-        return redirect()->route('evaluadores.index')->with('success', 'Evaluador actualizado.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        Evaluador::destroy($id);
-        return redirect()->route('evaluadores.index')->with('success', 'Evaluador eliminado.');
+        return redirect()->route('dashboard')
+            ->with('success', 'Perfil eliminado exitosamente.');
     }
 }
