@@ -2,7 +2,7 @@ D# 💻 Proyecto Pia
  
 # Miembros del equipo
 <div align="center">
-  <table>
+  <table width="700">
     <tr>
       <td>
         <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/Samuel.jpg" alt="Samuel Moreno Mesa" width="200" style="border-radius: 10px;">
@@ -16,7 +16,7 @@ D# 💻 Proyecto Pia
 
 <br>
 <div align="center">
-  <table>
+  <table width="700">
     <tr>
       <td>
         <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/shelcy.jpeg" alt="Shelcy Rondon" width="200" style="border-radius: 10px;">
@@ -30,28 +30,13 @@ D# 💻 Proyecto Pia
 
 <br>
 <div align="center">
-  <table>
+  <table width="700">
     <tr>
       <td>
         <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/juliana.jpg" alt="Juliana Berrio" width="200" style="border-radius: 10px;">
       </td>
       <td style="padding-left: 20px;">
         <p style="text-align: left;">Juliana Berrio, estudiante de desarrollo de software, 4° semestre.</p>
-      </td>
-    </tr>
-  </table>
-</div>
-
-<div align="center">
-  <table>
-    <tr>
-      <td>
-        <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/juliana.jpg" alt="Juliana Berrio" width="200" height="250" style="border-radius: 10px; object-fit: cover;">
-      </td>
-      <td style="padding-left: 20px; width: 500px;">
-        <p style="text-align: left;">
-          Juliana Berrio, estudiante de desarrollo de software, 4° semestre.
-        </p>
       </td>
     </tr>
   </table>
