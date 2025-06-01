@@ -46,7 +46,7 @@ D# 💻 Proyecto Pia
   <table>
     <tr>
       <td>
-        <img src="https://ruta-de-tu-imagen/juliana.jpg" alt="Juliana Berrio" width="200" height="250" style="border-radius: 10px; object-fit: cover;">
+        <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/juliana.jpg" alt="Juliana Berrio" width="200" height="250" style="border-radius: 10px; object-fit: cover;">
       </td>
       <td style="padding-left: 20px; width: 500px;">
         <p style="text-align: left;">
