@@ -4,10 +4,16 @@
 <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/Samuel.jpg" alt="Samuel Moreno Mesa" width="300"/>
 Samuel Moreno Mesa, estudiante de desarrollo de software, 4° semestre.
 
-<div style="display: flex; align-items: center; border: 1px solid #ccc; padding: 10px; border-radius: 10px; background-color: #1e1e1e;">
-  <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/Samuel.jpg" alt="Samuel Moreno Mesa" width="200" style="margin-right: 20px; border-radius: 10px;">
-  <p style="color: white; font-size: 16px;">Samuel Moreno Mesa, estudiante de desarrollo de software, 4° semestre.</p>
-</div>
+<table>
+  <tr>
+    <td>
+      <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/Samuel.jpg" alt="Samuel Moreno Mesa" width="200" style="border-radius: 10px;">
+    </td>
+    <td style="padding-left: 20px;">
+      <p>Samuel Moreno Mesa, estudiante de desarrollo de software, 4° semestre.</p>
+    </td>
+  </tr>
+</table>
 
 
 
