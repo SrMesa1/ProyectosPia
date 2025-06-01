@@ -22,11 +22,42 @@ D# 💻 Proyecto Pia
         <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/shelcy.jpeg" alt="Shelcy Rondon" width="200" style="border-radius: 10px;">
       </td>
       <td style="padding-left: 20px;">
-        <p style="text-align: left;">Nombre del otro miembro, estudiante de desarrollo de software, 4° semestre.</p>
+        <p style="text-align: left;">Shelcy Rondon Muñoz, estudiante de desarrollo de software, 4° semestre.</p>
       </td>
     </tr>
   </table>
 </div>
+
+<br>
+<div align="center">
+  <table>
+    <tr>
+      <td>
+        <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/juliana.jpg" alt="Juliana Berrio" width="200" style="border-radius: 10px;">
+      </td>
+      <td style="padding-left: 20px;">
+        <p style="text-align: left;">Juliana Berrio, estudiante de desarrollo de software, 4° semestre.</p>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<br>
+<div align="center">
+  <table>
+    <tr>
+      <td>
+        <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/juandavid.jpeg" alt="Juliana Berrio" width="200" style="border-radius: 10px;">
+      </td>
+      <td style="padding-left: 20px;">
+        <p style="text-align: left;">Juan David Lopez, estudiante de desarrollo de software, 4° semestre.</p>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+
 
 
 
