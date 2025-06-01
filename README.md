@@ -1,3 +1,106 @@
+# 💻 Proyecto Pia
+ 
+# Miembros del equipo
+<div align="center">
+  <table width="700">
+    <tr>
+      <td>
+        <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/Samuel.jpg" alt="Samuel Moreno Mesa" width="200" style="border-radius: 10px;">
+      </td>
+      <td style="padding-left: 20px;">
+        <p style="text-align: left;">Samuel Moreno Mesa, estudiante de desarrollo de software, 4° semestre.</p>
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+<br>
+<div align="center">
+  <table width="700">
+    <tr>
+      <td>
+        <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/shelcy.jpeg" alt="Shelcy Rondon" width="200" style="border-radius: 10px;">
+      </td>
+      <td style="padding-left: 20px;">
+        <p style="text-align: left;">Shelcy Rondon Muñoz, estudiante de desarrollo de software, 4° semestre.</p>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<br>
+
+<div align="center">
+  <table width="700">
+    <tr>
+      <td>
+        <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/juliana.jpg" alt="Juliana Berrio" width="200" style="border-radius: 10px;">
+      </td>
+      <td style="padding-left: 20px;">
+        <p style="text-align: left;">Juliana Arboleda Berrio, estudiante de desarrollo de software, 4° semestre.</p>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<br>
+
+<div align="center">
+  <table width="700">
+    <tr>
+      <td>
+        <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/juandavid.jpeg" alt="Juan David Lopez" width="200" style="border-radius: 10px;">
+      </td>
+      <td style="padding-left: 20px;">
+        <p style="text-align: left;">Juan David Lopez, estudiante de desarrollo de software, 4° semestre.</p>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<br>
+
+<div align="center">
+  <table width="700">
+    <tr>
+      <td>
+        <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/daniela.jpg" alt="Juan David Lopez" width="200" style="border-radius: 10px;">
+      </td>
+      <td style="padding-left: 20px;">
+        <p style="text-align: left;">Daniela Gonzalez Tarraz, estudiante de desarrollo de software, 4° semestre.</p>
+      </td>
+    </tr>
+  </table>
+</div>
+
+# 🧩 Descripción del Proyecto
+
+Este proyecto es una plataforma web desarrollada con **Laravel**, diseñada para gestionar de manera eficiente los proyectos PIA (Proyecto Integrador de Aula) y PA (Proyecto Académico) de los estudiantes de la **Universidad Pascual Bravo**.
+
+La aplicación permite a los usuarios:
+
+- ✅ **Crear nuevos proyectos** con la información relevante del equipo y el desarrollo del trabajo.
+- 📝 **Editar** los proyectos existentes para mantenerlos actualizados.
+- 🗑️ **Eliminar** proyectos de forma segura.
+- 🔍 **Consultar** y visualizar proyectos de otros equipos o semestres.
+
+La plataforma está construida con herramientas modernas como:
+
+- **Laravel** (Framework backend principal)
+- **Blade** (Motor de plantillas)
+- **Bootstrap** (Diseño responsivo)
+- **MySQL** (Base de datos relacional)
+- **JavaScript / JQuery** (Interacción dinámica)
+
+Gracias a esta solución, se facilita la organización, seguimiento y presentación de los proyectos académicos en un entorno centralizado, intuitivo y profesional.
+
+
+
+
+
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
@@ -6,6 +109,9 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
+
+
+
 
 ## About Laravel
 
