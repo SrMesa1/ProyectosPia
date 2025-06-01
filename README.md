@@ -42,6 +42,21 @@ D# 💻 Proyecto Pia
   </table>
 </div>
 
+<div align="center">
+  <table>
+    <tr>
+      <td>
+        <img src="https://ruta-de-tu-imagen/juliana.jpg" alt="Juliana Berrio" width="200" height="250" style="border-radius: 10px; object-fit: cover;">
+      </td>
+      <td style="padding-left: 20px; width: 500px;">
+        <p style="text-align: left;">
+          Juliana Berrio, estudiante de desarrollo de software, 4° semestre.
+        </p>
+      </td>
+    </tr>
+  </table>
+</div>
+
 <br>
 <div align="center">
   <table>
