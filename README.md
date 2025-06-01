@@ -47,7 +47,7 @@ D# 💻 Proyecto Pia
   <table>
     <tr>
       <td>
-        <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/juandavid.jpeg" alt="Juliana Berrio" width="200" style="border-radius: 10px;">
+        <img src="https://raw.githubusercontent.com/SrMesa1/ProyectosPia/main/juandavid.jpeg" alt="Juan David Lopez" width="200" style="border-radius: 10px;">
       </td>
       <td style="padding-left: 20px;">
         <p style="text-align: left;">Juan David Lopez, estudiante de desarrollo de software, 4° semestre.</p>
